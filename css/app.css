@@ -1,0 +1,231 @@
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --line: #d8dee6;
+  --line-strong: #b9c3d0;
+  --text: #1f2933;
+  --muted: #6b7785;
+  --accent: #1a7f37;
+  --accent-soft: #e6f4ea;
+  --sel: #1a7f37;
+  --head: #eef1f4;
+  --danger: #b3261e;
+  --radius: 8px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  overflow: hidden;
+}
+
+button, select, input { font: inherit; color: inherit; }
+button {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+  line-height: 1.1;
+}
+button:hover { background: #f0f3f6; }
+button:active { transform: translateY(1px); }
+button.active { background: var(--accent-soft); border-color: var(--accent); }
+button.ghost { background: transparent; }
+button:disabled { opacity: .45; cursor: default; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.brand { font-size: 16px; letter-spacing: .2px; }
+.brand b { color: var(--accent); }
+.brand .ver { font-size: 11px; color: var(--muted); margin-left: 4px; }
+.file-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.group { display: flex; gap: 3px; align-items: center; padding-right: 10px; border-right: 1px solid var(--line); }
+.group:last-child { border-right: 0; }
+.color { position: relative; display: inline-flex; align-items: center; gap: 2px; cursor: pointer; padding: 2px 4px; border: 1px solid transparent; border-radius: 6px; }
+.color:hover { border-color: var(--line); }
+.color input { width: 18px; height: 18px; border: 0; padding: 0; background: none; cursor: pointer; }
+#num-format { padding: 4px 6px; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+
+.formula-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.name-box { width: 80px; text-align: center; border: 1px solid var(--line); border-radius: 6px; padding: 4px 6px; background: #fbfcfd; }
+.fx { color: var(--muted); font-style: italic; }
+.formula-input { flex: 1; border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; background: #fff; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+
+.grid-wrap {
+  flex: 1;
+  overflow: auto;
+  background: var(--panel);
+  position: relative;
+}
+table.sheet {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+table.sheet th, table.sheet td {
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
+  height: 24px;
+  font-size: 13px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+table.sheet thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: var(--head);
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+  height: 24px;
+  user-select: none;
+}
+table.sheet tbody th {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--head);
+  color: var(--muted);
+  font-weight: 500;
+  text-align: center;
+  width: 44px;
+  user-select: none;
+}
+table.sheet thead th.corner { left: 0; z-index: 4; }
+table.sheet td {
+  padding: 0 4px;
+  text-align: left;
+  vertical-align: middle;
+  cursor: cell;
+  background: #fff;
+}
+table.sheet td.num { text-align: right; }
+table.sheet td.in-range { background: #eef7f0; }
+table.sheet td.active {
+  outline: 2px solid var(--sel);
+  outline-offset: -2px;
+  background: #f6fff8;
+}
+table.sheet td.editing {
+  outline: 2px solid var(--sel);
+  background: #fff;
+  cursor: text;
+  overflow: visible;
+  white-space: pre;
+  z-index: 5;
+}
+table.sheet td .err { color: var(--danger); }
+
+.sheet-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  overflow-x: auto;
+}
+.sheet-tab {
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  padding: 5px 12px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sheet-tab.active { background: var(--bg); border-color: var(--line); color: var(--text); font-weight: 600; }
+.sheet-tab .x { margin-left: 6px; color: var(--muted); font-size: 11px; }
+
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+  min-height: 26px;
+}
+.statusbar .spacer { flex: 1; }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 32, .45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 40;
+  padding: 16px;
+}
+.modal[hidden] { display: none; }
+.modal-card {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 20px;
+  width: min(460px, 100%);
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-card.wide { width: min(760px, 100%); }
+.modal-card h2 { margin: 0 0 4px; font-size: 18px; }
+.modal-card label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.modal-card input[type="url"], .modal-card select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px;
+  background: #fff;
+  font-size: 14px;
+  color: var(--text);
+}
+.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+.muted { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.help-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.help-grid h3 { margin: 4px 0 6px; font-size: 14px; }
+.help-grid ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+@media (max-width: 720px) {
+  .topbar, .toolbar { padding: 6px 8px; }
+  .formula-bar { padding: 6px 8px; }
+  .help-grid { grid-template-columns: 1fr; }
+  .file-actions button { padding: 5px 7px; font-size: 12px; }
+}

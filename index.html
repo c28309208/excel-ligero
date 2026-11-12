@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excel Ligero — hoja de cálculo en el navegador</title>
+<meta name="description" content="Hoja de cálculo ligera: fórmulas, varias hojas, formato, importar/exportar xlsx y datos desde una URL. Sin instalación.">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Excel <b>Ligero</b> <span class="ver">1.0</span></div>
+  <div class="file-actions">
+    <button id="btn-new" title="Libro nuevo">Nuevo</button>
+    <button id="btn-open" title="Abrir .xlsx, .xls, .csv">Abrir</button>
+    <button id="btn-save" title="Descargar como .xlsx">Guardar .xlsx</button>
+    <button id="btn-csv" title="Descargar como .csv">CSV</button>
+    <button id="btn-connect" title="Traer datos de una URL">Conectar datos</button>
+    <input type="file" id="file-input" accept=".xlsx,.xls,.xlsm,.csv,.tsv,.json" hidden>
+  </div>
+</header>
+
+<div class="toolbar" id="toolbar">
+  <div class="group">
+    <button data-cmd="undo" title="Deshacer (Ctrl+Z)">↶</button>
+    <button data-cmd="redo" title="Rehacer (Ctrl+Y)">↷</button>
+  </div>
+  <div class="group">
+    <button data-cmd="bold" title="Negrita (Ctrl+B)"><b>B</b></button>
+    <button data-cmd="italic" title="Cursiva (Ctrl+I)"><i>I</i></button>
+    <button data-cmd="underline" title="Subrayado (Ctrl+U)"><u>U</u></button>
+  </div>
+  <div class="group">
+    <label class="color" title="Color de texto">A<input type="color" id="fg-color" value="#111111"></label>
+    <label class="color" title="Color de relleno">▨<input type="color" id="bg-color" value="#fff3b0"></label>
+  </div>
+  <div class="group">
+    <button data-cmd="align-left" title="Alinear a la izquierda">⯇</button>
+    <button data-cmd="align-center" title="Centrar">≡</button>
+    <button data-cmd="align-right" title="Alinear a la derecha">⯈</button>
+  </div>
+  <div class="group">
+    <select id="num-format" title="Formato de número">
+      <option value="General">General</option>
+      <option value="0">Número entero</option>
+      <option value="0.00">2 decimales</option>
+      <option value="#,##0.00">Miles</option>
+      <option value="$#,##0.00">Moneda</option>
+      <option value="0%">Porcentaje</option>
+      <option value="dd/mm/yyyy">Fecha</option>
+      <option value="dd/mm/yyyy hh:mm">Fecha y hora</option>
+    </select>
+  </div>
+  <div class="group">
+    <button data-cmd="clear" title="Borrar contenido (Supr)">Limpiar</button>
+    <button data-cmd="sum" title="Insertar SUMA de la selección">Σ</button>
+  </div>
+  <div class="group">
+    <button data-cmd="add-sheet" title="Nueva hoja">+ Hoja</button>
+    <button data-cmd="del-sheet" title="Borrar hoja">− Hoja</button>
+  </div>
+</div>
+
+<div class="formula-bar">
+  <input id="name-box" class="name-box" value="A1" title="Celda activa" readonly>
+  <span class="fx">fx</span>
+  <input id="formula-input" class="formula-input" placeholder="Escribe un valor o una fórmula, por ejemplo =SUMA(A1:A10)" spellcheck="false">
+</div>
+
+<div class="grid-wrap" id="grid-wrap">
+  <table class="sheet" id="sheet"></table>
+</div>
+
+<div class="sheet-tabs" id="sheet-tabs"></div>
+
+<footer class="statusbar">
+  <span id="status-msg">Listo</span>
+  <span class="spacer"></span>
+  <span id="status-calc"></span>
+</footer>
+
+<div class="modal" id="connect-modal" hidden>
+  <div class="modal-card">
+    <h2>Conectar datos desde una URL</h2>
+    <p class="muted">Trae un CSV o un JSON (lista de listas u objetos). El sitio debe permitir CORS; si no, descarga el archivo y usa <b>Abrir</b>.</p>
+    <label>URL
+      <input id="conn-url" type="url" placeholder="https://ejemplo.com/datos.csv">
+    </label>
+    <label>Hoja destino
+      <select id="conn-sheet"></select>
+    </label>
+    <label>Tipo
+      <select id="conn-type">
+        <option value="auto">Detectar</option>
+        <option value="csv">CSV</option>
+        <option value="json">JSON</option>
+      </select>
+    </label>
+    <div class="modal-actions">
+      <button id="conn-cancel" class="ghost">Cancelar</button>
+      <button id="conn-ok">Conectar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="help-modal" hidden>
+  <div class="modal-card wide">
+    <h2>Atajos y funciones</h2>
+    <div class="help-grid">
+      <div>
+        <h3>Atajos</h3>
+        <ul>
+          <li><b>Flechas</b>: mover · <b>Shift+Flechas</b>: seleccionar</li>
+          <li><b>Enter</b>: editar / confirmar · <b>F2</b>: editar</li>
+          <li><b>Supr</b>: borrar · <b>Ctrl+C / V</b>: copiar y pegar</li>
+          <li><b>Ctrl+Z / Y</b>: deshacer y rehacer</li>
+          <li><b>Ctrl+B / I / U</b>: negrita, cursiva, subrayado</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Funciones</h3>
+        <p class="muted">SUMA, PROMEDIO, MIN, MAX, CONTAR, CONTARA, SI, SI.ERROR, Y, O, NO, REDONDEAR, ENTERO, RESIDUO, POTENCIA, RAIZ, CONCATENAR, LARGO, IZQUIERDA, DERECHA, EXTRAE, MAYUSC, MINUSC, ESPACIOS, ENCONTRAR, SUSTITUIR, VALOR, TEXTO, HOY, AHORA, AÑO, MES, DIA, FECHA, BUSCARV, INDICE, COINCIDIR, CONTAR.SI, SUMAR.SI, PROMEDIO.SI, MEDIANA, MAYOR, MENOR, SUMAPRODUCTO.</p>
+        <p class="muted">También en inglés: SUM, AVERAGE, IF, VLOOKUP, COUNTIF…</p>
+      </div>
+    </div>
+    <div class="modal-actions"><button id="help-close">Cerrar</button></div>
+  </div>
+</div>
+
+<script src="js/xlsx.full.min.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
